@@ -48,20 +48,17 @@ public class EnvioService {
         }
 
         // Retorna DTO con la información actualizada
-        SeguimientoEnvioDTO dto = new SeguimientoEnvioDTO();
+        SeguimientoEnvioDTO seguimiento = new SeguimientoEnvioDTO();
 
-        dto.setIdEnvio(envio.getIdEnvio());
-        dto.setNumeroSeguimiento(envio.getNumeroSeguimiento());
-        dto.setServicioTransporte(envio.getServicioTransporte());
-        dto.setTipoEntrega(envio.getTipoEntrega());
-        dto.setEstadoEnvio(envio.getEstadoEnvio());
-        dto.setDirDestino(envio.getDirDestino());
-        dto.setCiudadDestino(envio.getLocalidad().getNombreLocalidad());
-        dto.setFechaDespacho(envio.getFechaDespacho());
-        dto.setFechaEstimadaLlegada(envio.getFechaEstimadaLlegada());
-        dto.setFechaEntregado(envio.getFechaEntregado());
-        dto.setDetalleEstadoExtranjero("Estado verificado con " + envio.getServicioTransporte());
+        seguimiento.setServicioTransporte(envio.getServicioTransporte());
+        seguimiento.setTipoEntrega(envio.getTipoEntrega());
+        seguimiento.setEstadoEnvio(envio.getEstadoEnvio());
+        seguimiento.setDirDestino(envio.getDirDestino());
+        seguimiento.setFechaDespacho(envio.getFechaDespacho());
+        seguimiento.setFechaEstimadaLlegada(envio.getFechaEstimadaLlegada());
+        seguimiento.setFechaEntregado(envio.getFechaEntregado());
+        seguimiento.setDetalleEstadoExtranjero("Estado verificado con " + envio.getServicioTransporte());
 
-        return dto;
+        return seguimiento;
     }
 }

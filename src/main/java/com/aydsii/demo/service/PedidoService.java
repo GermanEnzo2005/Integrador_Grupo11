@@ -20,6 +20,7 @@ import com.aydsii.demo.repository.LocalidadRepository;
 import org.springframework.stereotype.Service;
 import com.aydsii.demo.dto.PedidoDTO;
 import com.aydsii.demo.model.DetallePedido;
+
 import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +68,7 @@ public class PedidoService {
             }
         }
 
-        //ahora se crena los detalles pedido uno por cada item del carrito ademas aprovechamos esta busqueda para crear variables necesarias para el pedido
+        //ahora se crean los detalles pedido uno por cada item del carrito ademas aprovechamos esta busqueda para crear variables necesarias para el pedido
         float subTotal = 0;
         int cantidadProductos = 0;
         float impactoAmbientalTotal = 0;
@@ -89,7 +90,7 @@ public class PedidoService {
             //lo agrega al arreglo de detalles pedidos
             detalles.add(detalle);
 
-            int puntosItem = item.getProducto().getPuntos();                   // 1.1.10
+            int puntosItem = item.getProducto().getPuntos() * cantidadItem;
             puntosTotales = puntosTotales + puntosItem;
         }
 

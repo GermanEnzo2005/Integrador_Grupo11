@@ -1,5 +1,6 @@
 package com.aydsii.demo.service.transporte;
 
+import java.sql.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Service;
@@ -44,4 +45,5 @@ public class AndreaniApiClient implements TransporteApiClient {
         // Retorno de estado actualizado desde el webservice de Andreani
         return EstadoEnvio.EN_REPARTO;
     }
+
 }

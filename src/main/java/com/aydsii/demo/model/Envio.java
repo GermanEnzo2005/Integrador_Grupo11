@@ -49,5 +49,6 @@ public class Envio {
         this.tipoEntrega = tipoEntrega;
         this.dirDestino = dirDestino;
         this.servicioTransporte = servicioTransporte;
+        this.fechaEstimadaLlegada = LocalDate.now().plusDays(30);
     }
 }
