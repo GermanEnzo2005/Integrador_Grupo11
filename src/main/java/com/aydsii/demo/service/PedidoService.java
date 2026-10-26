@@ -12,12 +12,15 @@ import com.aydsii.demo.enums.EstadoPedido;
 import com.aydsii.demo.model.Envio;
 import com.aydsii.demo.repository.EnvioRepository;
 import com.aydsii.demo.repository.PedidoRepository;
+import com.aydsii.demo.service.transporte.TransporteApiClient;
+import com.aydsii.demo.service.transporte.TransporteApiFactory;
 import com.aydsii.demo.repository.CarritoRepository;
 import com.aydsii.demo.model.Localidad;
 import com.aydsii.demo.repository.LocalidadRepository;
 import org.springframework.stereotype.Service;
 import com.aydsii.demo.dto.PedidoDTO;
 import com.aydsii.demo.model.DetallePedido;
+
 import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +33,14 @@ public class PedidoService {
     private final LocalidadRepository localidadRepository;
     private final PedidoRepository pedidoRepository;
     private final EnvioRepository envioRepository;
+    private final TransporteApiFactory transporteApiFactory; // Inyección de la factoría
 
-    public PedidoService(CarritoRepository carritoRepository, LocalidadRepository localidadRepository, PedidoRepository pedidoRepository, EnvioRepository envioRepository) {
+    public PedidoService(CarritoRepository carritoRepository, LocalidadRepository localidadRepository, PedidoRepository pedidoRepository, EnvioRepository envioRepository, TransporteApiFactory transporteApiFactory) {
         this.carritoRepository = carritoRepository;
         this.localidadRepository = localidadRepository;
         this.pedidoRepository = pedidoRepository;
         this.envioRepository = envioRepository;
+        this.transporteApiFactory = transporteApiFactory;
     }
 
     
@@ -63,7 +68,7 @@ public class PedidoService {
             }
         }
 
-        //ahora se crena los detalles pedido uno por cada item del carrito ademas aprovechamos esta busqueda para crear variables necesarias para el pedido
+        //ahora se crean los detalles pedido uno por cada item del carrito ademas aprovechamos esta busqueda para crear variables necesarias para el pedido
         float subTotal = 0;
         int cantidadProductos = 0;
         float impactoAmbientalTotal = 0;
@@ -85,7 +90,7 @@ public class PedidoService {
             //lo agrega al arreglo de detalles pedidos
             detalles.add(detalle);
 
-            int puntosItem = item.getProducto().getPuntos();                   // 1.1.10
+            int puntosItem = item.getProducto().getPuntos() * cantidadItem;
             puntosTotales = puntosTotales + puntosItem;
         }
 
@@ -133,6 +138,16 @@ public class PedidoService {
 
         //se crea el envio asociado
         Envio envio = new Envio(pedido, localidad, comprarDTO.getTipoEntrega(), comprarDTO.getDirDestino(), comprarDTO.getServicioTransporte());
+        
+        // 1. Se obtiene el cliente del servicio de transporte seleccionado (Andreani o Correo Argentino)
+        TransporteApiClient apiClient = transporteApiFactory.getClient(comprarDTO.getServicioTransporte());
+
+        // 2. Se pide al servicio de transporte que genere el código de seguimiento
+        Long numeroSeguimientoGenerado = apiClient.generarNumeroSeguimiento();
+
+        // 3. Setea los datos correspondientes en el objeto Envio
+        envio.setNumeroSeguimiento(numeroSeguimientoGenerado);
+        
         //y se guarda tambine
         envioRepository.save(envio);
 

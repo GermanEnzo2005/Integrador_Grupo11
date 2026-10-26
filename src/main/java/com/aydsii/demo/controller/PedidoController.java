@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 @RestController
 @RequestMapping("/api/pedido")
@@ -28,6 +32,26 @@ public class PedidoController {
     @PostMapping("/comprar")
     @Operation(summary = "Comprar carrito",
             description = "Valida el carrito y registra el pedido")
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "201",
+            description = "Compra relizada correctamente",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ApiResponse.class)
+            )
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "400",
+            description = "Stock insuficiente",
+            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Carrito no encontrado",
+            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+        ),
+    })
     public ResponseEntity<ApiResponse<PedidoDTO>> crearPedido(@Valid @RequestBody ComprarDTO comprarDTO) {
         PedidoDTO pedidoCreado = pedidoService.procesarCompra(comprarDTO);
 
